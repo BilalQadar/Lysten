@@ -63,10 +63,11 @@ def continue_dialog():
 
 def badDay(event,context):
     #TODO: Add a slot type so Alexa better understands what kind of day you are having
-    #TODO: Varying responses 
-    
-    return statement("title","I am sorry you had such a shitty day. Tell me about it.")
-    
+    #TODO: Varying responses
+    slots = event['request']['intent']['slots']
+    phrase = "I am sorry you had a "+slots['day_type']['value']+" day. Tell me more about it." 
+    return statement("Tell me more!",phrase)
+        
 def breakup(event,context):
     #TODO: Add a slot type so Alexa better understands genger 
     
