@@ -106,6 +106,9 @@ def on_launch(event, context):
     #TODO: Dynamic greeting depending on tone of user
     return statement("title", "Hello, how can I help?")
 
+def try_again(event,context): 
+    return statement('Sorry I didnt get that. Could you repeat it please?')
+
 
 ##############################
 # Routing
@@ -152,3 +155,5 @@ def lambda_handler(event, context):
 
     elif event['request']['type'] == "IntentRequest":
         return intent_router(event, context)
+    else: 
+        return try_again(event,context)
