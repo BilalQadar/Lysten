@@ -61,23 +61,27 @@ def continue_dialog():
 # Custom Intents
 ##############################
 
-def badDay(event,context):
-    #TODO: Add a slot type so Alexa better understands what kind of day you are having
+def name(event,context,user_name): 
+    phrase  = "Hi "+user_name+" . How is it going?"
+    display = "Hi, "+user_name
+    return statement(display,phrase)
+    
+def badDay(event,context,user_name):
     #TODO: Varying responses
     slots = event['request']['intent']['slots']
     phrase = "I am sorry you had a "+slots['day_type']['value']+" day. Tell me more about it." 
     return statement("Tell me more!",phrase)
         
-def breakup(event,context):
-    #TODO: Add a slot type so Alexa better understands genger 
+def breakup(event,context,user_name):
+    #TODO: Add a slot type so Alexa better understands gender 
     
-    return statement("title","Things always change for the better. Tell me more?")
+    return statement("Everything will be alright","Things always change for the better. Tell me more?")
     
-def tellMeMore(event,context): 
+def tellMeMore(event,context,user_name): 
 
     return statement("title","I'm glad you're feeling better. Thank you for talking. I'm always here if you need other recourses of just want to talk.")
 
-def dontTellMeMore(event,context):
+def dontTellMeMore(event,context,user_name):
     #TODO: End session call when 'goodbye' is heard
     return statement("title","Ok. I am always here if you need me. Let me know if you would like to talk to someone else, I have resources for you.")
 
@@ -105,7 +109,7 @@ def stop_intent():
 
 def on_launch(event, context):
     #TODO: Dynamic greeting depending on tone of user
-    return statement("title", "Hello, how can I help?")
+    return statement("title", "Hello, who am I speaking with?")
 
 def try_again(event,context): 
     return statement('Sorry I didnt get that. Could you repeat it please?')
@@ -118,19 +122,24 @@ def try_again(event,context):
 
 def intent_router(event, context):
     intent = event['request']['intent']['name']
-
+    user_name = ''
+    
     # Custom Intents
     
+    if intent == "name_intent":
+        user_name = event['request']['intent']['slots']['name']['value']
+        return name(event,context,user_name)
+        
     if intent == "badDay": 
-        return badDay(event,context)
+        return badDay(event,context,user_name)
     
     elif intent == "relationships": 
         #Detect when a breakup happens using slot_type
-        return breakup(event,context)
+        return breakup(event,context,user_name)
         
     elif intent == "talkMore":
         #Detect when a breakup happens using a slot_type
-        return dontTellMeMore(event,context)
+        return dontTellMeMore(event,context,user_name)
 
 
     # Required Intents
@@ -156,5 +165,6 @@ def lambda_handler(event, context):
 
     elif event['request']['type'] == "IntentRequest":
         return intent_router(event, context)
+    
     else: 
         return try_again(event,context)
