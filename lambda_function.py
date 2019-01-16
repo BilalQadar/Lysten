@@ -56,26 +56,28 @@ def continue_dialog():
     message['directives'] = [{'type': 'Dialog.Delegate'}]
     return build_response(message)
 
-
 ##############################
 # Custom Intents
 ##############################
 
 def name(event,context,user_name): 
+    
     phrase  = "Hi "+user_name+" . How is it going?"
     display = "Hi, "+user_name
     return statement(display,phrase)
     
 def badDay(event,context,user_name):
     #TODO: Varying responses
+    
     slots = event['request']['intent']['slots']
     phrase = "I am sorry you had a "+slots['day_type']['value']+" day. Tell me more about it." 
     return statement("Tell me more!",phrase)
         
 def breakup(event,context,user_name):
     #TODO: Add a slot type so Alexa better understands gender 
+    phrase = "Everything will be alright "+user_name+". Things always change for the better. Tell me more?"
     
-    return statement("Everything will be alright","Things always change for the better. Tell me more?")
+    return statement("I love you",phrase)
     
 def tellMeMore(event,context,user_name): 
 
@@ -134,12 +136,20 @@ def intent_router(event, context):
         return badDay(event,context,user_name)
     
     elif intent == "relationships": 
-        #Detect when a breakup happens using slot_type
         return breakup(event,context,user_name)
         
     elif intent == "talkMore":
-        #Detect when a breakup happens using a slot_type
-        return dontTellMeMore(event,context,user_name)
+        
+        conversation_continue = ['yes','sure','yeah','okay']
+        conversation_stop = ['no','nope', 'fuck']
+        user_response = event['request']['intent']['slots']['option']['value']
+        
+        if user_response in conversation_stop:
+            return dontTellMeMore(event,context,user_name)
+        elif user_response in conversation_continue: 
+            return tellMeMore(event,context,user_name)
+        else: 
+            statement(":)","I know a lot is going on. Keep talking to me about it!")
 
 
     # Required Intents
