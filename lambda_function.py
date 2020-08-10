@@ -3,7 +3,7 @@
 # Builders
 ##############################
 
-#Authors: Bilal Qadar, Harnish Patel ************HIRE US PLS***************
+#Authors: Bilal Qadar, Harnish Patel 
 
 def build_PlainSpeech(body):
     speech = {}
